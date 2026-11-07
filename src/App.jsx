@@ -1,14 +1,6 @@
 import { useState , useEffect } from "react";
 import RepoList from "./RepoList";
-function Header({title,subtitle}){
-  return (
-    <>
-    <h1>{title}</h1>
-    <p>{subtitle}</p>
-    </>
-    
-  )
-}
+import Header from "./Header";
 
 
 function App(){
