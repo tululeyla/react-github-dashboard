@@ -1,53 +1,48 @@
-import { useState , useEffect } from "react";
-import RepoList from "./RepoList";
-import Header from "./Header";
+import { useState, useEffect } from "react";
 
+function App() {
+  const [username, setUsername] = useState("octocat");
+  const [user, setUser] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
 
-function App(){
-  const [ isOnline, setIsOnline] = useState(true);
-  const [ user , setUser] = useState(null);
-  const [error, setError] = useState(false);
-  const [repos, setRepos] = useState([]);
-
-
-
-useEffect(() => {
-  fetch('https://api.github.com/users/octocat/repos')
-.then(response => {
-  if(!response.ok) {
-    throw new Error("Could not load the user");
-  }
-  return response.json();
-})
-.then((data)=>setRepos(data))
-.catch((err) => setError(err.message));
-
-fetch("https://api.github.com/users/octocat")
-  .then(response => {
-    if(!response.ok){
-      throw new Error("Could not load the user");
-    }
-    return response.json();
-  })
-  .then(data => setUser(data))
-  .catch(err => setError(err.message))
-}
-,[]);
+  useEffect(() => {
+    fetch(`https://api.github.com/users/${username}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setUser(data);
+      });
+  }, [username]);
 
   return (
-    
-    <div className = "first">
-      <RepoList repositories = {repos}/>
-      <Header title = "My Developer Journey" subtitle = "Building a freelance portfolio"/>
-      <h1>{user ? user.name : "Loading..."}</h1>
-      {error && <p style={{color:"red"}}>{error}</p>}
-      <p>solve real problem</p>
-      <button onClick={() => setIsOnline(!isOnline)}>Toggle Status</button>
-      <p>Status: {isOnline ? "Online 🟢" : "Offline 🔴"}</p>
-    </div>
-  
-  )
+    <div>
+      <h1>My GitHub Dashboard</h1>
+      <input 
+      type="text"
+      placeholder="Enter GitHub username..."
+      value={searchInput}
+      onChange={
+        (e)=> setSearchInput(e.target.value)
+      }
+      />
+      <button onClick={
+        () => setUsername(searchInput)}>Search</button>
+      
+      <p>{username}</p>
 
+      {user && (
+        <div>
+          <img
+            src={user.avatar_url}
+            alt="User Avatar"
+            width="100"
+            style={{ borderRadius: "50%" }}
+          />
+          <h2>{user.name}</h2>
+          <p>{user.bio || "no bio"}</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default App;
